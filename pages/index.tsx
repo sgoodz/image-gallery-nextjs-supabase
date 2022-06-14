@@ -23,9 +23,9 @@ export default function Gallery({ images }: { images: Image[] }) {
   artistNames = [...new Set(artistNames)]
   console.log(artistNames)
 
-  const filteredFunction = (images, artist) => {
+  const filteredFunction = (images: any, artist: string) => {
     const propsToCheck = ['artistName']
-    const filteredResponse = images.filter((o) =>
+    const filteredResponse = images.filter((o: any) =>
       propsToCheck.some((k) =>
         String(o[k]).toLowerCase().includes(artist.toLowerCase())
       )
@@ -102,8 +102,8 @@ type Image = {
   imageSrc: string
   name: string
   username: string
-  artistName: any
-  artist: any
+  artistName: string
+  artist: string
 }
 
 export async function getStaticProps() {
