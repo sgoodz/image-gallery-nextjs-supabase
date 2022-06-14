@@ -10,16 +10,30 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
 
-function filterImages(artist) {
-  console.log(artist)
+interface filteredProps {
+  images: Array<object>
+  artist: string
 }
 
 export default function Gallery({ images }: { images: Image[] }) {
-  const [select, setSelect] = useState('')
+  const [imageDisplay, setImageDisplay] = useState(images)
 
+  console.log('Main data set: ', images)
   let artistNames = images.map((a) => a.artistName)
   artistNames = [...new Set(artistNames)]
   console.log(artistNames)
+
+  const filteredFunction = (images, artist) => {
+    const propsToCheck = ['artistName']
+    const filteredResponse = images.filter((o) =>
+      propsToCheck.some((k) =>
+        String(o[k]).toLowerCase().includes(artist.toLowerCase())
+      )
+    )
+    console.log(filteredResponse)
+    setImageDisplay(filteredResponse)
+  }
+
   return (
     <>
       <h1 className="text-center text-4xl font-bold pt-12">
@@ -27,9 +41,15 @@ export default function Gallery({ images }: { images: Image[] }) {
       </h1>
       <div className="max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
         <div className="flex flex-wrap gap-x-4">
+          <button
+            onClick={() => setImageDisplay(images)}
+            className="rounded-xl bg-white border border-gray-500 py-1 px-3 capitalize hover:bg-gray-400 transition-colors duration-300"
+          >
+            All
+          </button>
           {artistNames.map((artist, index) => (
             <button
-              onClick={() => filterImages(artist)}
+              onClick={() => filteredFunction(images, artist)}
               key={index}
               className="rounded-xl bg-white border border-gray-500 py-1 px-3 capitalize hover:bg-gray-400 transition-colors duration-300"
             >
@@ -38,7 +58,7 @@ export default function Gallery({ images }: { images: Image[] }) {
           ))}
         </div>
         <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-          {images.map((image) => (
+          {imageDisplay.map((image) => (
             <BlurImage key={image.id} image={image} />
           ))}
         </div>
@@ -82,7 +102,8 @@ type Image = {
   imageSrc: string
   name: string
   username: string
-  artistName: string
+  artistName: any
+  artist: any
 }
 
 export async function getStaticProps() {
