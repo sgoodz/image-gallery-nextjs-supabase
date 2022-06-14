@@ -3,5 +3,3 @@
 ## View Live
 
 https://image-gallery-nextjs-supabase-eta.vercel.app/
-
-test
